@@ -7,8 +7,8 @@ const cache = new NodeCache({ stdTTL: 86400 }); // Cache de 24h
 
 // Configuration CORS
 app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST'],
+    origin: 'https://www.neogeo-players.com/',
+    methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type']
 }));
 
