@@ -8,7 +8,7 @@ const cache = new NodeCache({ stdTTL: 86400 }); // Cache de 24h
 // Configuration CORS pour autoriser uniquement toto.bonjour
 const corsOptions = {
     origin: 'https://neogeoplayers.com', // Autorise uniquement ce domaine
-    methods: ['POST'],
+    methods: ['GET, POST, OPTIONS'],
     allowedHeaders: ['Content-Type']
 };
 
