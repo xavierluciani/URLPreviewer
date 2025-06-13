@@ -8,12 +8,16 @@ const cache = new NodeCache({ stdTTL: 86400 }); // Cache de 24h
 // Configuration CORS pour autoriser uniquement toto.bonjour
 const corsOptions = {
     origin: 'https://neogeoplayers.com', // Autorise uniquement ce domaine
-    methods: ['GET, POST, OPTIONS'],
-    allowedHeaders: ['Content-Type']
+    methods: ['GET', 'POST', 'OPTIONS'], // Ajout de OPTIONS
+    allowedHeaders: ['Content-Type'],
+    optionsSuccessStatus: 200 // Évite les erreurs 401 sur OPTIONS
 };
 
 app.use(express.json());
 app.use(cors(corsOptions)); // Appliquer les règles CORS
+
+// Répondre aux requêtes préliminaires OPTIONS
+app.options('*', cors(corsOptions));
 
 app.post('/api/meta', async (req, res) => {
     console.log("Requête reçue :", req.body);
@@ -25,7 +29,7 @@ app.post('/api/meta', async (req, res) => {
     }
 
     try {
-        const response = await fetch(url); // Utilisation de fetch natif
+        const response = await fetch(url);
         const html = await response.text();
 
         console.log("HTML récupéré avec succès");
