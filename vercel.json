@@ -1,10 +1,10 @@
 {
   "version": 2,
-    "headers": [
+  "headers": [
     {
       "source": "/api/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "https://www.neogeo-players.com" },
+        { "key": "Access-Control-Allow-Origin", "value": "https://neogeo-players.com" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" },
         { "key": "Access-Control-Allow-Credentials", "value": "true" }
