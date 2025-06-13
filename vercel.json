@@ -1,10 +1,13 @@
 {
   "version": 2,
   "functions": {
-    "api/**/*.js": {
-      "runtime": "vercel/node@20.x"
+    "api/*.js": {
+      "runtime": "nodejs18.x"
     }
-  },
+  },  
+  "engines": {
+    "node": ">=18.0.0 <19.0.0"
+  }
   "routes": [
     { "src": "/api/meta", "dest": "/api/meta.js" }
   ]
