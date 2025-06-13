@@ -1,5 +1,6 @@
 import express from 'express';
 import NodeCache from 'node-cache';
+import fetch from 'node-fetch';
 
 const app = express();
 const cache = new NodeCache({ stdTTL: 86400 }); // Cache de 24h
@@ -16,13 +17,25 @@ app.post('/api/meta', async (req, res) => {
     }
 
     try {
-        const response = await fetch(url);
-        const html = await response.text();
+        const response = await fetch(url, {
+            method: 'GET',
+            redirect: 'follow', // Suivre les redirections
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+            }
+        });
 
+        if (!response.ok) {
+            console.error(`Erreur HTTP ${response.status}`);
+            return res.status(response.status).json({ error: `Erreur HTTP ${response.status}` });
+        }
+
+        const html = await response.text();
         console.log("HTML récupéré avec succès");
 
         const titleMatch = html.match(/<title>(.*?)<\/title>/);
-        const imageMatch = html.match(/<meta property=\"og:image\" content=\"(.*?)\"/);
+        const imageMatch = html.match(/<meta property="og:image" content="(.*?)"/);
 
         const metaData = {
             title: titleMatch ? titleMatch[1] : 'Titre non trouvé',
