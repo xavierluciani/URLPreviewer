@@ -48,9 +48,3 @@ app.post('/api/meta', async (req, res) => {
 });
 
 module.exports = app;
-
-3. Déployer sur Vercel
-
-    Créer un fichier vercel.json pour configurer les routes :
-
-json
