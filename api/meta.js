@@ -7,9 +7,9 @@ const cache = new NodeCache({ stdTTL: 86400 }); // Cache de 24h
 
 // Configuration CORS
 app.use(cors({
-    origin: '*', // Autorise toutes les origines (à adapter selon tes besoins)
-    methods: ['GET', 'POST'], // Autorise uniquement GET et POST
-    allowedHeaders: ['Content-Type'] // Autorise les headers nécessaires
+    origin: '*',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type']
 }));
 
 app.use(express.json());
@@ -31,7 +31,10 @@ app.post('/api/meta', async (req, res) => {
             redirect: 'follow',
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'fr-FR,fr;q=0.9,en-US,en;q=0.8',
+                'Referer': 'https://www.google.com/', // Simule une requête venant de Google
+                'Connection': 'keep-alive'
             }
         });
 
