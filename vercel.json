@@ -7,7 +7,7 @@
   },  
   "engines": {
     "node": ">=18.0.0 <19.0.0"
-  }
+  },
   "routes": [
     { "src": "/api/meta", "dest": "/api/meta.js" }
   ]
