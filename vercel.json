@@ -1,6 +1,6 @@
 {
   "version": 2,
-   "headers": [
+  "headers": [
     {
       "source": "/api/(.*)",
       "headers": [
@@ -11,8 +11,8 @@
       ]
     }
   ],
-  "builds": [{ "src":"api/meta.js", "use":"@vercel/node" }],
-  "routes": [
-    { "src": "/api/meta", "dest": "api/meta.js" }
+  "builds": [{ "src": "api/meta.js", "use": "@vercel/node" }],
+  "rewrites": [
+    { "source": "/api/meta", "destination": "/api/meta.js" }
   ]
 }
