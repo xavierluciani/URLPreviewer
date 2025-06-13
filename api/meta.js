@@ -6,8 +6,15 @@ import cors from 'cors';
 const app = express();
 const cache = new NodeCache({ stdTTL: 86400 }); // Cache de 24h
 
+// Configuration CORS pour autoriser uniquement
+const corsOptions = {
+    origin: 'https://neogeoplayers.com', // Autorise uniquement ce domaine
+    methods: ['POST'],
+    allowedHeaders: ['Content-Type']
+};
+
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions)); // Appliquer les règles CORS
 
 app.post('/api/meta', async (req, res) => {
     console.log("Requête reçue :", req.body);
