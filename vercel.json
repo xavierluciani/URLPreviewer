@@ -1,0 +1,5 @@
+{
+  "routes": [
+    { "src": "/api/meta", "dest": "/api/meta.js" }
+  ]
+}
