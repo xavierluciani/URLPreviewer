@@ -4,9 +4,9 @@
     {
       "source": "/api/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "https://www.neogeo-players.com https://neogeoplayers.com  http://www.neogeo-players.com http://neogeo-players.com" },
+        { "key": "Access-Control-Allow-Origin", "value": "https://www.neogeo-players.com https://neogeo-players.com  http://www.neogeo-players.com http://neogeo-players.com" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" },
+        { "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Content-Type, Authorization" },
         { "key": "Access-Control-Allow-Credentials", "value": "true" }
       ]
     }
