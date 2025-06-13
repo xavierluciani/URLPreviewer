@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "builds": [{ "src":"api/meta.js", "use":"@vercel/node" }]
+  "builds": [{ "src":"api/meta.js", "use":"@vercel/node" }],
   "routes": [
     { "src": "/api/meta", "dest": "/api/meta.js" }
   ]
