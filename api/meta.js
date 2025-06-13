@@ -1,12 +1,11 @@
 import express from 'express';
-import fetch from 'node-fetch';
 import NodeCache from 'node-cache';
 import cors from 'cors';
 
 const app = express();
 const cache = new NodeCache({ stdTTL: 86400 }); // Cache de 24h
 
-// Configuration CORS pour autoriser uniquement
+// Configuration CORS pour autoriser uniquement toto.bonjour
 const corsOptions = {
     origin: 'https://neogeoplayers.com', // Autorise uniquement ce domaine
     methods: ['POST'],
@@ -26,7 +25,7 @@ app.post('/api/meta', async (req, res) => {
     }
 
     try {
-        const response = await fetch(url);
+        const response = await fetch(url); // Utilisation de fetch natif
         const html = await response.text();
 
         console.log("HTML récupéré avec succès");
