@@ -14,5 +14,10 @@
   "builds": [{ "src": "api/meta.js", "use": "@vercel/node" }],
   "rewrites": [
     { "source": "/api/meta", "destination": "/api/meta.js" }
-  ]
+  ],
+  "functions": {
+    "api/**": {
+      "maxDuration": 60,
+      "memory": 1024
+    }
 }
