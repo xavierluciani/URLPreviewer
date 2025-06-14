@@ -1,7 +1,7 @@
 import express from 'express';
 import NodeCache from 'node-cache';
 import cors from 'cors';
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 import axios from 'axios';
 
 const app = express();
