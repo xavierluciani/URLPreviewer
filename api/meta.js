@@ -1,7 +1,8 @@
 import express from 'express';
 import NodeCache from 'node-cache';
 import cors from 'cors';
-import puppeteer from 'puppeteer-core';
+import cheerio from 'cheerio';
+import axios from 'axios';
 
 const app = express();
 const cache = new NodeCache({ stdTTL: 86400 });
@@ -13,6 +14,11 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+const userAgents = [
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+];
 
 app.post('/api/meta', async (req, res) => {
     const { url } = req.body;
@@ -26,28 +32,26 @@ app.post('/api/meta', async (req, res) => {
     }
 
     try {
-        const browser = await puppeteer.connect({
-            browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}`,
+        const response = await axios.get(url, {
+            timeout: 15000,
+            headers: {
+                'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)],
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                'Accept-Language': 'fr-FR,fr;q=0.9,en;q=0.8'
+            }
         });
 
-        const page = await browser.newPage();
-        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
+        const $ = cheerio.load(response.data);
         
-        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 15000 });
+        const metaData = {
+            title: $('title').text().trim() || 
+                   $('meta[property="og:title"]').attr('content') || 
+                   'Titre non trouvé',
+            image: $('meta[property="og:image"]').attr('content') || 
+                   $('meta[name="twitter:image"]').attr('content') || 
+                   'Image non trouvée'
+        };
 
-        const metaData = await page.evaluate(() => {
-            const title = document.querySelector('title')?.textContent || 
-                         document.querySelector('meta[property="og:title"]')?.content || 
-                         'Titre non trouvé';
-            
-            const image = document.querySelector('meta[property="og:image"]')?.content || 
-                         document.querySelector('meta[name="twitter:image"]')?.content || 
-                         'Image non trouvée';
-            
-            return { title: title.trim(), image };
-        });
-
-        await browser.close();
         cache.set(url, metaData);
         res.json(metaData);
 
