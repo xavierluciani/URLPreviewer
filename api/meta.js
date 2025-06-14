@@ -20,10 +20,36 @@ const userAgents = [
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
 ];
 
+function validateAndCleanUrl(inputUrl) {
+    try {
+        let cleanedUrl = inputUrl.trim()
+            .replace(/^["']+|["']+$/g, '')
+            .replace(/["']/g, '')
+            .replace(/\s+/g, '');
+        
+        const urlObj = new URL(cleanedUrl);
+        
+        if (!['http:', 'https:'].includes(urlObj.protocol)) {
+            throw new Error('Protocole non supporté');
+        }
+        
+        return cleanedUrl;
+    } catch (error) {
+        throw new Error('URL invalide: ' + error.message);
+    }
+}
+
 app.post('/api/meta', async (req, res) => {
-    const { url } = req.body;
+    let { url } = req.body;
+    
     if (!url) {
         return res.status(400).json({ error: 'URL manquante' });
+    }
+
+    try {
+        url = validateAndCleanUrl(url);
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
     }
 
     const cachedData = cache.get(url);
@@ -56,8 +82,30 @@ app.post('/api/meta', async (req, res) => {
         res.json(metaData);
 
     } catch (error) {
-        console.error("Erreur :", error);
-        res.status(500).json({ error: 'Impossible de récupérer les données' });
+        if (error.response) {
+            const status = error.response.status;
+            console.error(`Erreur HTTP ${status} pour ${url}`);
+            
+            switch (status) {
+                case 410:
+                    return res.status(410).json({ 
+                        error: 'Ressource définitivement supprimée' 
+                    });
+                case 404:
+                    return res.status(404).json({ 
+                        error: 'Page non trouvée' 
+                    });
+                default:
+                    return res.status(status).json({ 
+                        error: `Erreur HTTP ${status}` 
+                    });
+            }
+        } else {
+            console.error('Erreur de réseau:', error.message);
+            return res.status(500).json({ 
+                error: 'Erreur de connexion' 
+            });
+        }
     }
 });
 
