@@ -39,6 +39,24 @@ function validateAndCleanUrl(inputUrl) {
     }
 }
 
+function findLogoImage($) {
+    // Sélectionne toutes les balises img
+    const imgs = $('img');
+    for (let i = 0; i < imgs.length; i++) {
+        const img = imgs[i];
+        const attribs = img.attribs || {};
+        // Vérifie id, class, alt pour le mot "logo" (insensible à la casse)
+        if (
+            (attribs.id && attribs.id.toLowerCase().includes('logo')) ||
+            (attribs.class && attribs.class.toLowerCase().includes('logo')) ||
+            (attribs.alt && attribs.alt.toLowerCase().includes('logo'))
+        ) {
+            return attribs.src || null;
+        }
+    }
+    return null;
+}
+
 app.post('/api/meta', async (req, res) => {
     let { url } = req.body;
     
@@ -68,15 +86,23 @@ app.post('/api/meta', async (req, res) => {
         });
 
         const $ = cheerio.load(response.data);
-        
-        const metaData = {
-            title: $('title').text().trim() || 
-                   $('meta[property="og:title"]').attr('content') || 
-                   'Titre non trouvé',
-            image: $('meta[property="og:image"]').attr('content') || 
-                   $('meta[name="twitter:image"]').attr('content') || 
-                   'Image non trouvée'
-        };
+
+        const title = $('title').text().trim() ||
+            $('meta[property="og:title"]').attr('content') ||
+            'Titre non trouvé';
+
+        let image = $('meta[property="og:image"]').attr('content') ||
+                    $('meta[name="twitter:image"]').attr('content');
+
+        // Si pas d'image og/twitter, cherche une image "logo"
+        if (!image) {
+            image = findLogoImage($);
+        }
+        if (!image) {
+            image = 'Image non trouvée';
+        }
+
+        const metaData = { title, image };        
 
         cache.set(url, metaData);
         res.json(metaData);
