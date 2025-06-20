@@ -40,18 +40,25 @@ function validateAndCleanUrl(inputUrl) {
 }
 
 function findLogoImage($) {
-    // Sélectionne toutes les balises img
-    const imgs = $('img');
-    for (let i = 0; i < imgs.length; i++) {
-        const img = imgs[i];
-        const attribs = img.attribs || {};
-        // Vérifie id, class, alt pour le mot "logo" (insensible à la casse)
-        if (
-            (attribs.id && attribs.id.toLowerCase().includes('logo')) ||
-            (attribs.class && attribs.class.toLowerCase().includes('logo')) ||
-            (attribs.alt && attribs.alt.toLowerCase().includes('logo'))
-        ) {
-            return attribs.src || null;
+    // Sélectionne tous les éléments avec id/class/alt contenant "logo"
+    const candidates = $('[id*="logo" i], [class*="logo" i], [alt*="logo" i]');
+    for (let i = 0; i < candidates.length; i++) {
+        const el = candidates[i];
+        const tag = el.tagName ? el.tagName.toLowerCase() : el.name?.toLowerCase() || '';
+        const attribs = el.attribs || {};
+
+        // Si c'est une image, retourne le src
+        if (tag === 'img' && attribs.src) {
+            return attribs.src;
+        }
+
+        // Sinon, cherche une image de fond en CSS inline
+        if (attribs.style) {
+            // Cherche background-image:url(...)
+            const match = attribs.style.match(/background(-image)?\s*:\s*url\((['"]?)(.*?)\2\)/i);
+            if (match && match[3]) {
+                return match[3];
+            }
         }
     }
     return null;
