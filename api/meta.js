@@ -94,7 +94,7 @@ app.post('/api/meta', async (req, res) => {
 
         const $ = cheerio.load(response.data);
 
-        const title = $('title').text().trim() ||
+        const title = $('head > title').first().text().trim() ||
             $('meta[property="og:title"]').attr('content') ||
             'Titre non trouvé';
 
