@@ -6,6 +6,7 @@ import axios from 'axios';
 
 const app = express();
 const cache = new NodeCache({ stdTTL: 86400 });
+const domain = 'https://www.neogeo-players.com';
 
 app.use(cors({
     origin: 'https://www.neogeo-players.com',
@@ -26,6 +27,10 @@ function validateAndCleanUrl(inputUrl) {
             .replace(/^["']+|["']+$/g, '')
             .replace(/["']/g, '')
             .replace(/\s+/g, '');
+
+        if (cleanedUrl.startsWith('/')) {
+            cleanedUrl = domain + cleanedUrl;
+        }
         
         const urlObj = new URL(cleanedUrl);
         
